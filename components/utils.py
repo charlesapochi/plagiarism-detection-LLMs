@@ -1,6 +1,38 @@
 from pprint import pprint
 import argparse
 from itertools import chain, tee
+from argparse import Namespace
+
+def get_default_args():
+    """Returns the default arguments as a Namespace object."""
+    default_arg_dict = {
+        'run_gradio': True,
+        'run_extended': True,
+        'demo_public': False,
+        'model_name_or_path': 'bigscience/bloom-560m', #'google/gemma-2-2b-it', #'meta-llama/Meta-Llama-3-8B',
+        'load_fp16': False,
+        'prompt_max_length': None,
+        'max_new_tokens': 200,
+        'generation_seed': 123,
+        'use_sampling': True,
+        'n_beams': 1,
+        'sampling_temp': 0.7,
+        'use_gpu': False,
+        'seeding_scheme': 'simple_1',
+        'gamma': 0.25,
+        'delta': 2.0,
+        'normalizers': '',
+        'skip_repeated_bigrams': False,
+        'ignore_repeated_ngrams': False,
+        'detection_z_threshold': 4.0,
+        'select_green_tokens': True,
+        'skip_model_load': False,
+        'seed_separately': True,
+    }
+    
+    args = Namespace()
+    args.__dict__.update(default_arg_dict)
+    return args
 
 def process_args(args):
     """Process and normalize command-line arguments."""
@@ -156,6 +188,12 @@ def parse_args():
         help="Skip the model loading to debug the interface.",
     )
     parser.add_argument(
+        "--ignore_repeated_ngrams",
+        type=str2bool,
+        default=False,
+        help="Ignore repeated ngrams.",
+    )
+    parser.add_argument(
         "--seed_separately",
         type=str2bool,
         default=True,
@@ -166,6 +204,12 @@ def parse_args():
         type=str2bool,
         default=False,
         help="Whether to run model in float16 precsion.",
+    )
+    parser.add_argument(
+        "--run_extended",
+        type=str2bool,
+        default=False,
+        help="Whether to run basic or advance algorithm.",
     )
     args = parser.parse_args()
     return args
